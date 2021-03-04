@@ -1,8 +1,8 @@
-from summoner import Summoner
+from multisummoner import MultiSummoner
 
-server = 'na1'
-summoner_name = 'tacotrader11'
+server_list = ['na1', 'na1', 'na1']
+summoner_name_list = ['tacotrader11', '16815514924', 'phoenixthecat']
 
-summoner = Summoner(server, summoner_name)
-summoner.calculate()
-print(summoner)
+multi_summoner = MultiSummoner(server_list, summoner_name_list)
+multi_summoner.calculate()
+print(multi_summoner)

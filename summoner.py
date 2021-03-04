@@ -29,15 +29,15 @@ class Summoner:
         for key in self.modes:
             s += str(self.modes[key]) + '\n'
         s += '-'*36 + '\n'
-        s += '{:<16s}{:>8d}{:>12d}'.format(self.name, self.num_games, self.total_time)
+        s += '{:<16s}{:>8d}{:>12d}'.format(self.name, self.num_games, self.total_time) + '\n'
+        s += '-'*36
         return s
-    
-    def update(self, match):
-        self.num_games += 1
-        self.total_time += match['gameDuration']
-        self.modes[match['queueId']].update(match)
     
     def calculate(self):
         matchlist = get_matchlist_full_by_id(self.server, self.account_id)
         for i in tqdm(range(len(matchlist))):
-            self.update(get_match_by_id(self.server, matchlist[i]['gameId']))
+            match = get_match_by_id(self.server, matchlist[i]['gameId'])
+            self.modes[match['queueId']].match_update(match)
+        for key in self.modes:
+            self.num_games += self.modes[key].num_games
+            self.total_time += self.modes[key].total_time
