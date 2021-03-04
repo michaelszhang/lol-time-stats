@@ -9,7 +9,8 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY")
 QUEUE_IDS = [400, 420, 430, 440, 450, 700, 900, 1020, 1300] # normal draft, ranked solo/duo, normal blind, ranked flex, aram, clash, urf, one for all, nexus blitz
-SEASON_START_TIME = { 'na1': calendar.timegm((2021, 1, 8, 12, 0, 0))*1000 }
+SEASON_10_START = { 'na1': calendar.timegm((2020, 1, 10, 12, 0, 0))*1000 }
+SEASON_11_START = { 'na1': calendar.timegm((2021, 1, 8, 12, 0, 0))*1000 }
 
 class APIException(Exception):
     pass
@@ -56,7 +57,7 @@ def get_matchlist_page_by_id(server, account_id, begin_index, end_index):
     for queue_id in QUEUE_IDS:
         queue_query += '&queue=' + str(queue_id)
 
-    begin_time_query = '&beginTime=' + str(SEASON_START_TIME[server])
+    begin_time_query = '&beginTime=' + str(SEASON_10_START[server])
     begin_index_query = '&beginIndex=' + str(begin_index)
     end_index_query = '&endIndex=' + str(end_index)
     request_url = get_api_domain(server) + '/lol/match/v4/matchlists/by-account/' + account_id + get_api_key_query() \
@@ -88,6 +89,7 @@ def calculate_total_time(server, summoner_name):
 
     return total_time
 
-server = 'na1'
-summoner_name = 'tacotrader11'
-print(calculate_total_time(server, summoner_name))
+if __name__ == '__main__':
+    server = 'na1'
+    summoner_name = 'tacotrader11'
+    print(calculate_total_time(server, summoner_name))
