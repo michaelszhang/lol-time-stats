@@ -45,6 +45,20 @@ def get_account_id_by_name(server, summoner_name):
 
     return response.json()['accountId']
 
+def get_summoner_id_by_name(server, summoner_name):
+    request_url = get_api_domain(server) + '/lol/summoner/v4/summoners/by-name/' + summoner_name + get_api_key_query()
+
+    response = make_get_request(request_url, 'summoner_name: ' + summoner_name)
+
+    return response.json()['id']
+
+def get_name_by_summoner_id(server, summoner_id):
+    request_url = get_api_domain(server) + '/lol/summoner/v4/summoners/' + summoner_id + get_api_key_query()
+
+    response = make_get_request(request_url, 'summoner_id: ' + summoner_id)
+
+    return response.json()['name']
+
 def get_match_by_id(server, match_id):
     request_url = get_api_domain(server) + '/lol/match/v4/matches/' + str(match_id) + get_api_key_query()
 
