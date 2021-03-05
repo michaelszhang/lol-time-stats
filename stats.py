@@ -7,7 +7,7 @@ from tqdm import tqdm
 
 load_dotenv()
 
-API_KEY = os.getenv("API_KEY")
+API_KEY = os.getenv("API_KEY") # <-- api key here
 QUEUE_IDS = [400, 420, 430, 440, 450, 700, 900, 1020, 1300] # normal draft, ranked solo/duo, normal blind, ranked flex, aram, clash, urf, one for all, nexus blitz
 SEASON_10_START = { 'na1': calendar.timegm((2020, 1, 10, 12, 0, 0))*1000 }
 SEASON_11_START = { 'na1': calendar.timegm((2021, 1, 8, 12, 0, 0))*1000 }
@@ -24,7 +24,7 @@ def make_get_request(request_url, error_message):
         if response.status_code == 200:
             continue
         elif response.status_code == 429:
-            time.sleep(response.headers["Retry-After"])
+            time.sleep(int(response.headers["Retry-After"]))
         elif response.status_code // 100 == 5:
             continue
         else:
@@ -40,30 +40,22 @@ def get_api_key_query():
 
 def get_account_id_by_name(server, summoner_name):
     request_url = get_api_domain(server) + '/lol/summoner/v4/summoners/by-name/' + summoner_name + get_api_key_query()
-
     response = make_get_request(request_url, 'summoner_name: ' + summoner_name)
-
     return response.json()['accountId']
 
 def get_summoner_id_by_name(server, summoner_name):
     request_url = get_api_domain(server) + '/lol/summoner/v4/summoners/by-name/' + summoner_name + get_api_key_query()
-
     response = make_get_request(request_url, 'summoner_name: ' + summoner_name)
-
     return response.json()['id']
 
 def get_name_by_summoner_id(server, summoner_id):
     request_url = get_api_domain(server) + '/lol/summoner/v4/summoners/' + summoner_id + get_api_key_query()
-
     response = make_get_request(request_url, 'summoner_id: ' + summoner_id)
-
     return response.json()['name']
 
 def get_match_by_id(server, match_id):
     request_url = get_api_domain(server) + '/lol/match/v4/matches/' + str(match_id) + get_api_key_query()
-
     response = make_get_request(request_url, 'match_id: ' + str(match_id))
-
     return response.json()
 
 def get_matchlist_page_by_id(server, account_id, begin_index, end_index):
