@@ -9,8 +9,6 @@ load_dotenv()
 
 API_KEY = os.getenv("API_KEY") # <-- api key here
 QUEUE_IDS = [400, 420, 430, 440, 450, 700, 900, 1020, 1300] # normal draft, ranked solo/duo, normal blind, ranked flex, aram, clash, urf, one for all, nexus blitz
-SEASON_10_START = { 'na1': calendar.timegm((2020, 1, 10, 12, 0, 0))*1000 }
-SEASON_11_START = { 'na1': calendar.timegm((2021, 1, 8, 12, 0, 0))*1000 }
 
 class APIException(Exception):
     pass
@@ -58,12 +56,12 @@ def get_match_by_id(server, match_id):
     response = make_get_request(request_url, 'match_id: ' + str(match_id))
     return response.json()
 
-def get_matchlist_page_by_id(server, account_id, begin_index, end_index):
+def get_matchlist_page_by_id(server, account_id, begin_time, begin_index, end_index):
     queue_query = ''
     for queue_id in QUEUE_IDS:
         queue_query += '&queue=' + str(queue_id)
 
-    begin_time_query = '&beginTime=' + str(SEASON_10_START[server])
+    begin_time_query = '&beginTime=' + str(begin_time)
     begin_index_query = '&beginIndex=' + str(begin_index)
     end_index_query = '&endIndex=' + str(end_index)
     request_url = get_api_domain(server) + '/lol/match/v4/matchlists/by-account/' + account_id + get_api_key_query() \
@@ -73,13 +71,13 @@ def get_matchlist_page_by_id(server, account_id, begin_index, end_index):
 
     return response.json()['matches']
 
-def get_matchlist_full_by_id(server, account_id):
+def get_matchlist_full_by_id(server, account_id, begin_time):
     matchlist = []
     matchlist_page = None
     page_index = 0
 
     while matchlist_page == None or len(matchlist_page) == 100:
-        matchlist_page = get_matchlist_page_by_id(server, account_id, page_index*100, (page_index+1)*100)
+        matchlist_page = get_matchlist_page_by_id(server, account_id, begin_time, page_index*100, (page_index+1)*100)
         matchlist += matchlist_page
         page_index += 1
     
@@ -98,4 +96,5 @@ def calculate_total_time(server, summoner_name):
 if __name__ == '__main__':
     server = 'na1'
     summoner_name = 'tacotrader11'
-    print(calculate_total_time(server, summoner_name))
+    begin_time = calendar.timegm((2020, 12, 30, 16, 0, 0))*1000
+    print(calculate_total_time(server, summoner_name, begin_time))

@@ -4,9 +4,9 @@ from summoner import Summoner
 
 class MultiSummoner:
 
-    def __init__(self, server, summoner_name_list):
+    def __init__(self, server, summoner_name_list, begin_time):
         self.server = server
-        self.summoner_list = [Summoner(server, summoner_name_list[i]) for i in range(len(summoner_name_list))]
+        self.summoner_list = [Summoner(server, summoner_name_list[i], begin_time) for i in range(len(summoner_name_list))]
         self.num_games = 0
         self.total_time = 0
         self.modes = {

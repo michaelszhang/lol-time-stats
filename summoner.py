@@ -4,9 +4,10 @@ from tqdm import tqdm
 
 class Summoner:
 
-    def __init__(self, server, summoner_name):
+    def __init__(self, server, summoner_name, begin_time):
         self.server = server
         self.name = summoner_name
+        self.begin_time = begin_time
         self.account_id = get_account_id_by_name(server, summoner_name)
         self.summoner_id = get_summoner_id_by_name(server, summoner_name)
         self.num_games = 0
@@ -66,7 +67,7 @@ class Summoner:
                 self.played_with[summoner_id][1] += match['gameDuration']
     
     def calculate(self):
-        matchlist = get_matchlist_full_by_id(self.server, self.account_id)
+        matchlist = get_matchlist_full_by_id(self.server, self.account_id, self.begin_time)
         for i in tqdm(range(len(matchlist))):
             match = get_match_by_id(self.server, matchlist[i]['gameId'])
             self.match_update(match)
